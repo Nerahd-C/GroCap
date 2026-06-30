@@ -40,7 +40,7 @@ namespace ConsoleApp7
             public int Quantity;
         }
 
-
+        //domeng
 
         static void Main(string[] args)
         {
