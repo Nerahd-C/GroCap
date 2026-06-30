@@ -132,7 +132,6 @@ namespace ConsoleApp7
                 if (string.IsNullOrEmpty(choice))
                 {
                     Error("\nPlease input an option.");
-                    Console.Clear();
                     continue;
                 }
 
@@ -271,7 +270,7 @@ namespace ConsoleApp7
                         return;
 
                     default:
-                        Console.WriteLine("Invalid choice.");
+                        Error("Invalid choice.");
                         continue;
                 }
             }
@@ -310,8 +309,6 @@ namespace ConsoleApp7
             Console.WriteLine("Savings Goal: $" + SavingsGoal);
 
             Console.WriteLine("\nStore Vists: " + Visits);  
-
-
 
             Pause();
         }
@@ -573,7 +570,7 @@ namespace ConsoleApp7
                 if (password != savedPassword)
                 {
 
-                    Console.Write("\nForgot Password? (Y/N): ");
+                    Console.Write("\nPassword incorrect.\n\nForgot Password? (Y/N): ");
 
                     string answer = Console.ReadLine().ToUpper();
 
@@ -1322,9 +1319,11 @@ namespace ConsoleApp7
 
         static void UpdateInventory()
         {
+
+            
             while (true)
             {
-               
+                Console.Clear();
 
                 string inventoryPath =
                     Path.Combine(UserFolder, "Inventory.txt");
@@ -1332,7 +1331,7 @@ namespace ConsoleApp7
                 List<string> items =
                     File.ReadAllLines(inventoryPath).ToList();
 
-                Console.Write("Item Name: ");
+                Console.Write("Item Name (B = Back): ");
                 string itemName = Console.ReadLine();
 
                 if (itemName.ToUpper() == "B")
@@ -1411,12 +1410,18 @@ namespace ConsoleApp7
 
                         break;
                     }
+
+                    if (items.Count == 0)
+                    {
+                        Error("Inventory is empty.");
+                        return;
+                    }
                 }
 
                 if (!found)
                 {
                     Error("Item not found.");
-                    continue;
+                    return;
                 }
 
                 
