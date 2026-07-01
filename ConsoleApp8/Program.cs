@@ -96,7 +96,7 @@ namespace ConsoleApp7
             while (true)
             {
 
-                string savingsLabel = IsPlanFinalized ? "Current Savings" : "Est. Savings";
+                string savingsLabel = IsPlanFinalized ? "Current Savings" : "Estimated Savings";
                 LoadProfile();
 
                 CalculateInventory();
@@ -443,20 +443,20 @@ namespace ConsoleApp7
        
                     else if(newvisits == "1")
                     {
-                        newvisits = "Every Week";
+                        visits = "Every Week";
                     }
                     else if (newvisits == "2")
                     {
-                        newvisits = "Every 2 Weeks";
+                        visits = "Every 2 Weeks";
                     }
 
                     else if (newvisits == "3")
                     {
-                        newvisits = "Every 3 Weeks";
+                        visits = "Every 3 Weeks";
                     }
                     else if (newvisits == "4")
                     {
-                        newvisits = "Once a Month";
+                        visits = "Once a Month";
                     }
 
 
@@ -791,19 +791,26 @@ namespace ConsoleApp7
                 {
                     case "1":
                        
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\nThank you for your consent. Let's proceed with creating your account.");
+                        Console.ResetColor();
                         Pause();
                         Console.Clear();
                         break;
 
 
                     case "2":
-                        Console.WriteLine("You must consent to create an account.");
+
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\nYou must consent to create an account.");
+                        Console.ResetColor();
                         Pause();
                         Console.Clear();
                         return;
 
                     default:
-                        Console.WriteLine("Invalid choice.");
+                        Console.WriteLine("\nInvalid choice.");
                         Pause();
                         Console.Clear();
                         continue;
