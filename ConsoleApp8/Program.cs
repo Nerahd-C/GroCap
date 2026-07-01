@@ -331,7 +331,7 @@ namespace ConsoleApp7
 
             Console.WriteLine("Savings Goal: $" + SavingsGoal);
 
-            Console.WriteLine("\nStore Vists: " + Visits);
+            Console.WriteLine("\nStore Visits: " + Visits);
 
             Pause();
         }
