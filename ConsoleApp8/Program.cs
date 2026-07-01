@@ -27,7 +27,7 @@ namespace ConsoleApp7
         static double CurrentSavings = 0;
 
         static double ShoppingLimit = 0;
-
+        static bool IsPlanFinalized = false;
         static double SavingsUsed = 0;
 
         static double RecommendedSpending = 0;
@@ -57,7 +57,8 @@ namespace ConsoleApp7
         {
             while (true)
             {
-                Header("HOME");
+                Header();
+                Header2("WELCOME TO GROCAP");
 
                 Console.WriteLine("[1] Login");
                 Console.WriteLine("[2] Sign Up");
@@ -92,14 +93,16 @@ namespace ConsoleApp7
 
         static void Dashboard()
         {
-            
             while (true)
             {
+
+                string savingsLabel = IsPlanFinalized ? "Current Savings" : "Est. Savings";
                 LoadProfile();
 
                 CalculateInventory();
 
-                Header("DASHBOARD");    
+                Header();    
+                Header2("DASHBOARD");
 
                 Console.WriteLine($"Welcome, {CurrentUser}!");
 
@@ -113,7 +116,7 @@ namespace ConsoleApp7
 
                 Console.WriteLine($"Savings Goal    : ${SavingsGoal}");
 
-                Console.WriteLine($"Current Savings : ${CurrentSavings}");
+                Console.WriteLine($"{savingsLabel,-16}: ${CurrentSavings}");
                 Console.WriteLine("--------------------------------------------------------------------------------------------------");
 
                 Console.WriteLine("[1] Account");
@@ -185,7 +188,8 @@ namespace ConsoleApp7
         {
             while (true)
             {
-                Header("PLANNER");
+                Header();
+                Header2("GROCERY PLANNER");
 
                 Console.Write("Would you like GROCAP to generate your grocery planner? (Y/N): ");
 
@@ -195,6 +199,7 @@ namespace ConsoleApp7
                 if (choice == "Y")
                 {
                     GroceryPlanner();
+                    return;
                 }
 
                 else if (choice == "N")
@@ -217,7 +222,8 @@ namespace ConsoleApp7
 
             while (true)
             {
-                Header("INVENTORY");
+                Header();
+                Header2("INVENTORY");
 
                 ViewInventory();
 
@@ -282,7 +288,8 @@ namespace ConsoleApp7
 
             string[] history = File.ReadAllLines(historyPath);
 
-            Header("SAVINGS TRACKER");
+            Header();
+            Header2("SAVINGS TRACKER");
 
             Console.WriteLine($"Current Savings: ${CurrentSavings}\n");
 
@@ -324,7 +331,8 @@ namespace ConsoleApp7
             string savedPassword = "";
 
 
-            Header("ACCOUNT INFOFRMATION");
+            Header();
+            Header2("ACCOUNT INFOFRMATION");
 
             foreach (string line in profile)
             {
@@ -522,7 +530,8 @@ namespace ConsoleApp7
         {
             while (true)
             {
-                Header("LOGIN");
+                Header();
+                Header2("LOGIN");
 
                 Console.Write("Username: ");
                 string username = Console.ReadLine().Trim();
@@ -577,6 +586,7 @@ namespace ConsoleApp7
                     if (answer == "Y")
                     {
                         ChangePassword();
+                        continue;
                     }
 
                     else if (answer == "N")
@@ -594,6 +604,7 @@ namespace ConsoleApp7
                     else
                     {
                         Error("Incorrect password.");
+                        continue;
                     }
                 }
 
@@ -613,7 +624,8 @@ namespace ConsoleApp7
             while (true)
             {
 
-                Header("SIGN UP");
+                Header();
+                Header2("SIGN UP");
 
                 Console.Write("Enter Email (@gmail.com): ");
                 string gmail = Console.ReadLine().Trim().ToLower();
@@ -626,6 +638,38 @@ namespace ConsoleApp7
                     Console.WriteLine();
                     Console.WriteLine("Invalid Gmail format.");
                     Console.WriteLine("Example: juan123@gmail.com");
+                    Pause();
+                    Console.Clear();
+                    continue;
+                }
+
+                bool gmailTaken = false;
+
+                foreach (string userDir in Directory.GetDirectories("Users"))
+                {
+                    string existingProfile = Path.Combine(userDir, "Profile.txt");
+
+                    if (!File.Exists(existingProfile))
+                        continue;
+
+                    foreach (string line in File.ReadAllLines(existingProfile))
+                    {
+                        string[] data = line.Split('|');
+
+                        if (data[0] == "Gmail" && data[1].ToLower() == gmail.ToLower())
+                        {
+                            gmailTaken = true;
+                            break;
+                        }
+                    }
+
+                    if (gmailTaken) break;
+                }
+
+                if (gmailTaken)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Gmail is already linked to an existing account.");
                     Pause();
                     Console.Clear();
                     continue;
@@ -677,7 +721,7 @@ namespace ConsoleApp7
                     Console.Clear();
                     continue;
                 }
-
+                
                 string userFolder = Path.Combine("Users", username);
 
                 if (Directory.Exists(userFolder))
@@ -730,7 +774,8 @@ namespace ConsoleApp7
 
 
 
-                Header("SIGN UP");
+                Header();
+                Header2("SIGN UP");
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\n\nWELCOME!");
                 Console.ResetColor();
@@ -791,7 +836,7 @@ namespace ConsoleApp7
                         continue;
                     }
 
-                    Console.WriteLine("\nChoose the target savings that matches your shopping frequency (e.g., your weekly target savings if you shop every week).\n");
+                    Console.WriteLine("\n\nChoose the target savings that matches your shopping frequency (e.g., your weekly target savings if you shop every week).");
                     Console.Write("\nTarget Grocery Savings (e.g., $500 ): ");
                     string savings = Console.ReadLine();
                     double testSavings;
@@ -921,7 +966,8 @@ namespace ConsoleApp7
 
         static void ChangePassword()
         {
-            Header("CHANGE PASSWORD");
+            Header();
+            Header2("CHANGE PASSWORD");
 
             while (true)
             {
@@ -1004,7 +1050,8 @@ namespace ConsoleApp7
                     Console.WriteLine($"\nHello {username}, your OTP is {numcode}");
 
                     Pause();
-                    Header("CHANGE PASSWORD");
+                    Header();
+                    Header2("CHANGE PASSWORD");
 
                     Console.WriteLine("=========================================");
                     Console.WriteLine("    PLEASE ENTER VERIFICATION CODE");
@@ -1163,6 +1210,8 @@ namespace ConsoleApp7
 
 
             Console.ResetColor();
+
+            IsPlanFinalized = true;
 
             Pause();
         }
@@ -1879,8 +1928,20 @@ namespace ConsoleApp7
 
             CurrentSavings = Budget - CurrentTotal;
 
-            if (CurrentSavings < 0)
-                CurrentSavings = 0;
+            if (CurrentTotal > shoppingLimit)
+            {
+                CurrentSavings += SavingsGoal;
+            }
+
+            else
+            {
+                double savingsUsed = CurrentTotal - shoppingLimit;
+                CurrentSavings = SavingsGoal - savingsUsed;
+                if(CurrentSavings < 0)
+                {
+                    CurrentSavings = 0;
+                }
+            }
         }
 
 
@@ -2007,33 +2068,43 @@ namespace ConsoleApp7
         // UTILITIES
         //==================================================
 
-        static void Header(string title)
+        static void Header()
         {
             Console.Clear();
+
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ResetColor();
 
             Console.ForegroundColor = ConsoleColor.Green;
 
             Console.WriteLine(@"
-
               ██████╗ ██████╗  ██████╗  ██████╗ █████╗ ██████╗
              ██╔════╝ ██╔══██╗██╔═══██╗██╔════╝██╔══██╗██╔══██╗
              ██║  ███╗██████╔╝██║   ██║██║     ███████║██████╔╝
              ██║   ██║██╔══██╗██║   ██║██║     ██╔══██║██╔═══╝
              ╚██████╔╝██║  ██║╚██████╔╝╚██████╗██║  ██║██║
               ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝
-                                    
-                              
-                   Grocery Consumption Analysis Planner
-
-               SDG 12: Responsible Consumption & Production
-
-                              (B = Back)  
-
 ");
 
             Console.ResetColor();
 
-            Console.WriteLine($"========================= {title} =========================\n");
+
+        }
+
+        static void Header2(string title)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine("                    Grocery Consumption Analysis Planner");
+            Console.WriteLine("                SDG 12: Responsible Consumption & Production");
+            Console.WriteLine("                            (B = Back)");
+
+            Console.ResetColor();
+
+            Console.WriteLine();
+            Console.WriteLine($"========================= {title} =========================");
+            Console.WriteLine();
         }
 
         static void Pause()
