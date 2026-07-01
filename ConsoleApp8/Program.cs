@@ -1849,10 +1849,10 @@ namespace ConsoleApp7
 
                 Console.ResetColor();
 
-                Console.WriteLine($"Shopping Limit : ₱{shoppingLimit}");
-                Console.WriteLine($"Current Total  : ₱{CurrentTotal}");
-                Console.WriteLine($"Savings Used   : ₱{savingsUsed}");
-                Console.WriteLine($"Savings Left   : ₱{CurrentSavings}");
+                Console.WriteLine($"Shopping Limit : ${shoppingLimit}");
+                Console.WriteLine($"Current Total  : ${CurrentTotal}");
+                Console.WriteLine($"Savings Used   : ${savingsUsed}");
+                Console.WriteLine($"Savings Left   : ${CurrentSavings}");
 
                 Console.WriteLine();
                 Console.WriteLine("Your grocery total has exceeded the shopping limit.");
@@ -1874,9 +1874,9 @@ namespace ConsoleApp7
 
             Console.ResetColor();
 
-            Console.WriteLine($"Budget         : ₱{Budget}");
-            Console.WriteLine($"Current Total  : ₱{CurrentTotal}");
-            Console.WriteLine($"Over Budget    : ₱{excess}");
+            Console.WriteLine($"Budget         : ${0}");
+            Console.WriteLine($"Current Total  : ${CurrentTotal}");
+            Console.WriteLine($"Over Budget    : ${excess}");
 
             Console.WriteLine();
             Console.WriteLine("Your grocery cart exceeds both your shopping limit and your total budget.");
@@ -1929,6 +1929,8 @@ namespace ConsoleApp7
 
                 CurrentSavings = SavingsGoal - savingsUsed;
 
+                
+
                 if (CurrentSavings < 0)
                     CurrentSavings = 0;
             }
@@ -1937,7 +1939,7 @@ namespace ConsoleApp7
 
             if (CurrentTotal > shoppingLimit)
             {
-                CurrentSavings += SavingsGoal;
+                CurrentSavings = 0;
             }
 
             else
